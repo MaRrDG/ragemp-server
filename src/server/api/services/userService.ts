@@ -14,31 +14,9 @@ export class AccountsService implements GlobalService {
 		}
 	}
 
-	public async getEntityById({ id }: { id: string }) {
+	public async getEntityByProperty({ property }: { property: { [key: string]: string } }) {
 		try {
-			const user = await AccountsModel.findById(id).exec();
-			if (!user) return undefined;
-
-			return user;
-		} catch (e) {
-			return rageConsole.error(e);
-		}
-	}
-
-	public async getEntityByRockstarId({ id }: { id: string }) {
-		try {
-			const user = await AccountsModel.findOne({ rgscId: id }).exec();
-			if (!user) return undefined;
-
-			return user;
-		} catch (e) {
-			return rageConsole.error(e);
-		}
-	}
-
-	public async getEntityByUsername({ username }: { username: string }) {
-		try {
-			const user = await AccountsModel.findOne({ username: username }).exec();
+			const user = await AccountsModel.findOne({ property }).exec();
 			if (!user) return undefined;
 
 			return user;
@@ -56,14 +34,14 @@ export class AccountsService implements GlobalService {
 		}
 	}
 
-	public async putEntity({ id, entity }: { id: string; entity: IUser }) {
+	public async putEntity({ username, entity }: { username: string; entity: IUser }) {
 		const account = new AccountsModel(entity);
 		const validation = account.validateSync();
 
 		if (validation?.errors) return rageConsole.error('Missing required fields');
 
 		try {
-			AccountsModel.findOneAndUpdate({ rgscId: id }, entity).exec();
+			AccountsModel.findOneAndUpdate({ username: username }, entity).exec();
 		} catch (e) {
 			rageConsole.error(e);
 		}

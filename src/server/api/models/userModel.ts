@@ -14,9 +14,9 @@ const AccountsSchema = new mongoose.Schema<IUser>({
 	username: { type: String, required: true, unique: true },
 	email: { type: String, required: true },
 	password: { type: String, required: true },
-	rgscId: { type: String, required: true, unique: true },
-	socialClub: { type: String, required: true, unique: true },
-	uuid: { type: String, required: true, unique: true },
+	rgscId: { type: String, required: true },
+	socialClub: { type: String, required: true },
+	uuid: { type: String, required: true },
 	admin: { type: Number, default: 0 }
 });
 

@@ -3,19 +3,13 @@ export class GlobalService {
 	getEntities() {}
 
 	//@ts-ignore
-	getEntityById({ id }: { id: string }) {}
-
-	//@ts-ignore
-	getEntityByRockstarId({ id }: { id: string }) {}
-
-	//@ts-ignore
-	getEntityByUsername({ username }: { username: string }) {}
+	getEntityByProperty({ property }: { property: { [key: string]: string } }) {}
 
 	//@ts-ignore
 	postEntity({ entity }: { entity: any }) {}
 
 	//@ts-ignore
-	putEntity({ id, entity }: { id: string; entity: any }) {}
+	putEntity({ username, entity }: { username: string; entity: any }) {}
 
 	//@ts-ignore
 	// patchEntity() {}

@@ -15,7 +15,7 @@ RPC.register('brw:checkPlayerCredentials', async (credentials, info) => {
 	const { username, password } = credentials;
 
 	try {
-		const resultData: any = await accountsService.getEntityByUsername({ username });
+		const resultData: any = await accountsService.getEntityByProperty({ property: { username } });
 		// TODO: toast here
 		if (resultData.password !== password) return;
 
@@ -55,9 +55,7 @@ RPC.register('brw:createPlayerCredentials', (credentials, info) => {
 
 mp.events.add('loadPlayerInfos', async (player: PlayerMp) => {
 	try {
-		const resultData: any = await accountsService.getEntityByRockstarId({
-			id: player.rgscId
-		});
+		const resultData: any = await accountsService.getEntityByProperty({ property: { username: player.name } });
 
 		const { _id, __v, password, rgscId, socialClub, uuid, ...user } = resultData._doc;
 
