@@ -3,7 +3,7 @@ export class GlobalService {
 	getEntities() {}
 
 	//@ts-ignore
-	getEntityByProperty({ property }: { property: { [key: string]: string } }) {}
+	getEntityByUsername({ username }: { username: string }) {}
 
 	//@ts-ignore
 	postEntity({ entity }: { entity: any }) {}
@@ -12,5 +12,5 @@ export class GlobalService {
 	putEntity({ username, entity }: { username: string; entity: any }) {}
 
 	//@ts-ignore
-	// patchEntity() {}
+	patchEntity({ username, entity }: { username: string; entity: any }) {}
 }

@@ -4,7 +4,8 @@ export type ICommands = {
 	commandName: string;
 	alias?: string[];
 	inVehicle?: boolean;
-	callback: (player: PlayerMp, fullText: string, ...args: string[]) => void;
+	adminLvl?: number;
+	callback: (player: PlayerMp, fullText: string, ...args: any) => void;
 };
 
 const commandsList: ICommands[] = [];
@@ -28,6 +29,10 @@ mp.events.add('playerCommand', (player, message) => {
 		});
 
 		if (!command) return player.sendErrorMessage('No command was found! Type /help for more commands.');
+
+		if (command.adminLvl && command.adminLvl > player.metadata.stats.admin)
+			return player.sendErrorMessage("You don't have access to use this command.");
+
 		if (command.inVehicle && !player.vehicle) return player.sendErrorMessage('You need to be in vehicle to use this command!');
 
 		command.callback(player, fullText, ...commandArgs);

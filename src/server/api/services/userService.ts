@@ -14,9 +14,9 @@ export class AccountsService implements GlobalService {
 		}
 	}
 
-	public async getEntityByProperty({ property }: { property: { [key: string]: string } }) {
+	public async getEntityByUsername({ username }: { username: string }) {
 		try {
-			const user = await AccountsModel.findOne({ property }).exec();
+			const user = await AccountsModel.findOne({ username: username }).exec();
 			if (!user) return undefined;
 
 			return user;
@@ -40,6 +40,14 @@ export class AccountsService implements GlobalService {
 
 		if (validation?.errors) return rageConsole.error('Missing required fields');
 
+		try {
+			AccountsModel.findOneAndUpdate({ username: username }, entity).exec();
+		} catch (e) {
+			rageConsole.error(e);
+		}
+	}
+
+	public async patchEntity({ username, entity }: { username: string; entity: IUser }) {
 		try {
 			AccountsModel.findOneAndUpdate({ username: username }, entity).exec();
 		} catch (e) {
