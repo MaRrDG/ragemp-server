@@ -25,10 +25,10 @@ export class AccountsService implements GlobalService {
 		}
 	}
 
-	public async postEntity({ entity }: { entity: IUser }) {
+	public async postEntity({ entity }: { entity: Omit<IUser, 'stats'> }) {
 		try {
 			await AccountsModel.create(entity);
-			rageConsole.query(`A new account has been added with rgscId: ${entity.rgscId}`);
+			rageConsole.query(`A new account has been added with username: ${entity.username}`);
 		} catch (e) {
 			return rageConsole.error(e);
 		}

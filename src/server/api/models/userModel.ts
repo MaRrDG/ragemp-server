@@ -7,7 +7,16 @@ export interface IUser {
 	rgscId: string;
 	socialClub: string;
 	uuid: string;
-	admin?: number;
+	stats: {
+		admin: number;
+		helper: number;
+		money: number;
+		bankMoney: number;
+		level: number;
+		points: {
+			experience?: number;
+		};
+	};
 }
 
 const AccountsSchema = new mongoose.Schema<IUser>({
@@ -17,7 +26,18 @@ const AccountsSchema = new mongoose.Schema<IUser>({
 	rgscId: { type: String, required: true },
 	socialClub: { type: String, required: true },
 	uuid: { type: String, required: true },
-	admin: { type: Number, default: 0 }
+	stats: {
+		admin: { type: Number, default: 0 },
+		helper: { type: Number, default: 0 },
+		money: { type: Number, default: 0 },
+		bankMoney: { type: Number, default: 0 },
+		level: { type: Number, default: 0 },
+		points: {
+			type: {
+				experience: { type: Number, default: 0 }
+			}
+		}
+	}
 });
 
 export const AccountsModel = mongoose.model('Accounts', AccountsSchema);
