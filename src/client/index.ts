@@ -1,20 +1,5 @@
-import * as RPC from 'rage-rpc';
+import "./randomStuff";
+import "./browsers";
+import { CONFIG } from "./config";
 
-mp.browsers.new('http://26.82.68.149:3000');
-const player = mp.players.local;
-
-RPC.register('toggleSnow', (bool: boolean) => {
-	//@ts-ignore
-	mp.game1.gameplay.enableSnow = bool;
-});
-
-RPC.register('showAuthentication', (bool) => {
-	setTimeout(() => {
-		mp.gui.cursor.show(bool, bool);
-		mp.gui.chat.show(!bool);
-		mp.game.ui.displayRadar(!bool);
-		player.setInvincible(bool);
-	}, 100);
-
-	RPC.triggerBrowsers('brw:showAuthentication', bool);
-});
+mp.browsers.new(CONFIG.React_URL);
