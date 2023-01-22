@@ -1,3 +1,3 @@
 export const CONFIG = {
-	React_URL: "http://localhost:3000/"
+	React_URL: "http://26.82.68.149:3000/"
 };
