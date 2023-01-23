@@ -1,3 +1,4 @@
+import { IUser } from "./../api/models/userModel";
 import { rageConsole } from "./../../shared/utils";
 import { AccountsService } from "@/api/services/userService";
 import * as RPC from "rage-rpc";
@@ -40,9 +41,7 @@ RPC.register("brw:checkPlayerCredentials", async (credentials, info) => {
 
 			const { _id, __v, password, rgscId, socialClub, uuid, ...user } = resultData._doc;
 
-			player.name = user.username;
-			player.metadata = user;
-			player.vars.loadPlayerInfo = false;
+			mp.events.call("loadPlayerInfos", player, user);
 		}, 500);
 	} catch (e) {
 		rageConsole.error(e);
@@ -70,29 +69,27 @@ RPC.register("brw:createPlayerCredentials", async (credentials, info) => {
 
 		player.name = username;
 
-		setTimeout(() => {
+		setTimeout(async () => {
 			RPC.callClient(player, "showAuthentication", false);
-			mp.events.call("loadPlayerInfos", player);
+			const resultData: any = await accountsService.getEntityByUsername({ username: player.name });
+			if (!resultData) return;
+
+			const { _id, __v, password, rgscId, socialClub, uuid, ...user } = resultData._doc;
+
+			mp.events.call("loadPlayerInfos", player, user);
 		}, 500);
 	} catch (e) {
 		rageConsole.error(e);
 	}
 });
 
-mp.events.add("loadPlayerInfos", async (player: PlayerMp) => {
-	console.log("da");
-
+mp.events.add("loadPlayerInfos", async (player: PlayerMp, user: IUser) => {
 	try {
-		const resultData: any = await accountsService.getEntityByUsername({ username: player.name });
-		console.log(resultData);
-
-		if (!resultData) return;
-
-		const { _id, __v, password, rgscId, socialClub, uuid, ...user } = resultData._doc;
-
 		player.name = user.username;
 		player.metadata = user;
 		player.vars.loadPlayerInfo = false;
+
+		RPC.callClient(player, "client:loadPlayerInfos");
 	} catch (e) {
 		rageConsole.error(e);
 	}
