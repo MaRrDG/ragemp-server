@@ -6,7 +6,7 @@
 	"announce": false,
 	"csharp": "disabled",
 	"port": 22005,
-	"bind": "127.0.0.1",
+	"bind": "26.82.68.149",
 	"encryption": false,
 	"url": "https://rage.mp",
 	"language": "en",
