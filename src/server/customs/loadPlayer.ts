@@ -42,6 +42,7 @@ RPC.register("brw:checkPlayerCredentials", async (credentials, info) => {
 			const { _id, __v, password, rgscId, socialClub, uuid, ...user } = resultData._doc;
 
 			mp.events.call("loadPlayerInfos", player, user);
+			player.outputChatBox(`Welcome back, ${player.name}.`);
 		}, 500);
 	} catch (e) {
 		rageConsole.error(e);
@@ -77,6 +78,7 @@ RPC.register("brw:createPlayerCredentials", async (credentials, info) => {
 			const { _id, __v, password, rgscId, socialClub, uuid, ...user } = resultData._doc;
 
 			mp.events.call("loadPlayerInfos", player, user);
+			player.outputChatBox(`Welcome, ${player.name}.`);
 		}, 500);
 	} catch (e) {
 		rageConsole.error(e);
