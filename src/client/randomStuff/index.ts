@@ -7,7 +7,7 @@ RPC.register("toggleSnow", (bool: boolean) => {
 
 RPC.register("client:loadPlayerInfos", () => {
 	if (!mp.storage.data.showTimestamp) {
-		mp.storage.data.showTimestamp = false;
+		mp.storage.data.showTimestamp = true;
 	}
 
 	mp.storage.flush();

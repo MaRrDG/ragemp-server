@@ -121,8 +121,13 @@ addNewCommand({
 	},
 	callback: (player, fullText, target) => {
 		let playerTarget = mp.players.at(target);
+		const playerTargetPosition = new mp.Vector3(playerTarget.position.x, playerTarget.position.y, playerTarget.position.z + 2);
 
-		player.position = playerTarget.position;
+		player.position = playerTargetPosition;
+		if (player.vehicle) {
+			player.vehicle.position = playerTargetPosition;
+			player.putIntoVehicle(player.vehicle, 0);
+		}
 		player.sendSuccessMessage(`You teleported to player with id ${target}`);
 	}
 });
@@ -136,8 +141,13 @@ addNewCommand({
 	},
 	callback: (player, fullText, target) => {
 		let playerTarget = mp.players.at(target);
+		const playerPosition = new mp.Vector3(player.position.x, player.position.y, player.position.z + 2);
 
-		playerTarget.position = player.position;
+		playerTarget.position = playerPosition;
+		if (playerTarget.vehicle) {
+			playerTarget.vehicle.position = playerPosition;
+			playerTarget.putIntoVehicle(playerTarget.vehicle, 0);
+		}
 		player.sendSuccessMessage(`You teleported player to you with id ${target}`);
 	}
 });

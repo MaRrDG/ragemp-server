@@ -3,7 +3,7 @@ import "./loadPlayer";
 import "./types";
 
 mp.events.add("playerChat", (player, message) => {
-	player.outputChatBox(`${player.name}(${player.id}): ${message}`);
+	mp.players.broadcastInRange(player.position, 25, `${player.name}(${player.id}): ${message}`);
 });
 
 mp.events.add("sendAllAdminMessage", (_player, message) => {

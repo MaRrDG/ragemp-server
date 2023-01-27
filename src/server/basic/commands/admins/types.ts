@@ -7,7 +7,7 @@ mp.Player.prototype.sendSuccessMessage = function (message: string) {
 };
 
 mp.Player.prototype.sendSyntaxMessage = function (message: string) {
-	this.outputChatBox(`!{#737373}SUCCESS!{#ffffff}: ${message}`);
+	this.outputChatBox(`!{#737373}SYNTAX!{#ffffff}: ${message}`);
 };
 
 mp.Player.prototype.sendAdminMessage = function (message: string) {
