@@ -1,8 +1,35 @@
-import { WEATHERS } from "./../../../../shared/weathers";
+import { WEATHERS } from "@shared/weathers";
 import { VEHICLE_HASES } from "@shared/vehicleHashes";
 import { generateRandomRGBColorAsArray } from "@shared/utils";
 import { addNewCommand } from "@/customs/commandHandling";
 import * as rpc from "rage-rpc";
+import fs from "fs";
+const saveFile = "savedposcam.txt";
+
+addNewCommand({
+	commandName: "savecam",
+	adminLvl: 1,
+	callback: function (player, name = "No name") {
+		player.call("getCamCoords", [name]);
+	}
+});
+
+mp.events.add("saveCamCoords", (player, position, pointAtCoord, name = "No name") => {
+	const pos = JSON.parse(position);
+	const point = JSON.parse(pointAtCoord);
+
+	fs.appendFile(
+		saveFile,
+		`Position: ${pos.x}, ${pos.y}, ${pos.z} | pointAtCoord: ${point.position.x}, ${point.position.y}, ${point.position.z} | entity: ${point.entity} - ${name}\r\n`,
+		(err) => {
+			if (err) {
+				player.notify(`~r~SaveCamPos Error: ~w~${err.message}`);
+			} else {
+				player.notify(`~g~PositionCam saved. ~w~(${name})`);
+			}
+		}
+	);
+});
 
 addNewCommand({
 	commandName: "spawncar",

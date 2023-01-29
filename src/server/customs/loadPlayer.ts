@@ -1,11 +1,11 @@
 import { IUser } from "./../api/models/userModel";
-import { rageConsole } from "./../../shared/utils";
+import { rageConsole } from "@shared/utils";
 import { AccountsService } from "@/api/services/userService";
 import * as RPC from "rage-rpc";
 
 const accountsService = new AccountsService();
 
-mp.events.add("playerJoin", async (player) => {
+mp.events.add("playerReady", async (player) => {
 	player.vars = {};
 	player.vars.loadPlayerInfo = true;
 
