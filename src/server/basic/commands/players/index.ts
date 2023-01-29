@@ -14,8 +14,14 @@ addNewCommand({
 	commandName: "togsnow",
 	alias: ["snow"],
 	callback: async (player) => {
-		player.vars.snow = !player.vars.snow;
-		RPC.callClient(player, "toggleSnow", player.vars.snow ? true : false);
-		player.sendSuccessMessage(`Snow ${player.vars.snow ? "activated" : "deactivated"} successfully`);
+		const snow = await RPC.callClient(player, "toggleSnow");
+		player.sendSuccessMessage(`Snow ${snow ? "activated" : "deactivated"} successfully.`);
+	}
+});
+
+addNewCommand({
+	commandName: "timestamp",
+	callback: async (player) => {
+		RPC.callClient(player, "showTimestamp");
 	}
 });

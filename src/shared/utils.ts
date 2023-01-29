@@ -2,6 +2,11 @@ export const generateRandomRGBColorAsArray = (): [number, number, number] => {
 	return [Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255)];
 };
 
+export const version = {
+	serverVersion: "0.0.2",
+	uiVersion: "0.0.2"
+};
+
 export const rageConsole = {
 	error: (message?: any) => {
 		return console.log(`\x1b[31m[ERROR]\x1b[0m ${message}`);

@@ -1,11 +1,11 @@
 import { IUser } from "./../api/models/userModel";
-import { rageConsole } from "./../../shared/utils";
+import { rageConsole } from "@shared/utils";
 import { AccountsService } from "@/api/services/userService";
 import * as RPC from "rage-rpc";
 
 const accountsService = new AccountsService();
 
-mp.events.add("playerJoin", async (player) => {
+mp.events.add("playerReady", async (player) => {
 	player.vars = {};
 	player.vars.loadPlayerInfo = true;
 
@@ -42,6 +42,7 @@ RPC.register("brw:checkPlayerCredentials", async (credentials, info) => {
 			const { _id, __v, password, rgscId, socialClub, uuid, ...user } = resultData._doc;
 
 			mp.events.call("loadPlayerInfos", player, user);
+			player.outputChatBox(`Welcome back, ${player.name}.`);
 		}, 500);
 	} catch (e) {
 		rageConsole.error(e);
@@ -77,6 +78,7 @@ RPC.register("brw:createPlayerCredentials", async (credentials, info) => {
 			const { _id, __v, password, rgscId, socialClub, uuid, ...user } = resultData._doc;
 
 			mp.events.call("loadPlayerInfos", player, user);
+			player.outputChatBox(`Welcome, ${player.name}.`);
 		}, 500);
 	} catch (e) {
 		rageConsole.error(e);

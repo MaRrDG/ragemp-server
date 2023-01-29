@@ -1,6 +1,7 @@
 import "./randomStuff";
 import "./browsers";
 import "./events";
+import "./systems";
 import { CONFIG } from "./config";
 
 mp.gui.chat.show(false);
