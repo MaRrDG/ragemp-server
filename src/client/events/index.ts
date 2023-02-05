@@ -1,4 +1,8 @@
+import { IShared } from "./type";
 import * as RPC from "rage-rpc";
+
+const player = mp.players.local;
+export let sharedVariables: IShared = {};
 
 mp.events.add("loadPlayerInfos", () => {
 	//@ts-ignore
@@ -9,4 +13,13 @@ mp.events.add("loadPlayerInfos", () => {
 			showTimestamp: mp.storage.data.showTimestamp
 		}
 	});
+});
+
+mp.events.addDataHandler("updateSharedVariables", (entity, { variables }) => {
+	if (entity && entity.remoteId === player.remoteId) {
+		for (const [key, value] of Object.entries(variables)) {
+			//@ts-ignore
+			sharedVariables[key] = value;
+		}
+	}
 });

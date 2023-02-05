@@ -1,104 +1,97 @@
-var getNormalizedVector = function (vector: any) {
-	var mag = Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
-	vector.x = vector.x / mag;
-	vector.y = vector.y / mag;
-	vector.z = vector.z / mag;
-	return vector;
-};
-var getCrossProduct = function (v1: any, v2: any) {
-	var vector = new mp.Vector3(0, 0, 0);
-	vector.x = v1.y * v2.z - v1.z * v2.y;
-	vector.y = v1.z * v2.x - v1.x * v2.z;
-	vector.z = v1.x * v2.y - v1.y * v2.x;
-	return vector;
-};
-var bindVirtualKeys = {
+import { sharedVariables } from "./../../events/index";
+import { getCrossProduct, getNormalizedVector, showPlayer, showToast } from "@/utils";
+
+const bindVirtualKeys = {
 	F2: 0x71
 };
-var bindASCIIKeys = {
+
+const bindASCIIKeys = {
 	Q: 69,
 	E: 81,
 	LCtrl: 17,
 	Shift: 16
 };
-var isNoClip = false;
-var noClipCamera: any;
-var shiftModifier = false;
-var controlModifier = false;
-var localPlayer = mp.players.local;
-mp.keys.bind(bindVirtualKeys.F2, true, function () {
+
+let isNoClip = false;
+let noClipCamera: any;
+let shiftModifier = false;
+let controlModifier = false;
+const player = mp.players.local;
+
+mp.keys.bind(bindVirtualKeys.F2, true, () => {
+	if (sharedVariables.haveInterfaceOpen || (sharedVariables.stats && sharedVariables.stats.admin < 1)) return;
+
 	isNoClip = !isNoClip;
 	mp.game.ui.displayRadar(!isNoClip);
-	if (isNoClip) {
-		startNoClip();
-	} else {
-		stopNoClip();
-	}
+	goNoClip(isNoClip);
 });
-function startNoClip() {
-	mp.game.graphics.notify("NoClip ~g~activated");
-	var camPos = new mp.Vector3(localPlayer.position.x, localPlayer.position.y, localPlayer.position.z);
-	var camRot = mp.game.cam.getGameplayCamRot(2);
-	noClipCamera = mp.cameras.new("default", camPos, camRot, 45);
-	noClipCamera.setActive(true);
-	mp.game.cam.renderScriptCams(true, false, 0, true, false);
-	localPlayer.freezePosition(true);
-	localPlayer.setInvincible(true);
-	localPlayer.setVisible(false, false);
-	localPlayer.setCollision(false, false);
-}
-function stopNoClip() {
-	mp.game.graphics.notify("NoClip ~r~disabled");
-	if (noClipCamera) {
-		const cameraPos = noClipCamera.getCoord();
-		localPlayer.position = new mp.Vector3(cameraPos.x, cameraPos.y, mp.game.gameplay.getGroundZFor3dCoord(cameraPos.x, cameraPos.y, cameraPos.z, false, false));
-		localPlayer.setHeading(noClipCamera.getRot(2).z);
-		noClipCamera.destroy(true);
-		noClipCamera = null;
+
+const goNoClip = (isNoClip: boolean) => {
+	if (sharedVariables.haveInterfaceOpen) return;
+
+	if (isNoClip) {
+		const camPos = new mp.Vector3(player.position.x, player.position.y, player.position.z);
+		const camRot = mp.game.cam.getGameplayCamRot(2);
+
+		noClipCamera = mp.cameras.new("default", camPos, camRot, 45);
+		noClipCamera.setActive(true);
+	} else {
+		if (noClipCamera) {
+			const cameraPos = noClipCamera.getCoord();
+			player.position = new mp.Vector3(cameraPos.x, cameraPos.y, mp.game.gameplay.getGroundZFor3dCoord(cameraPos.x, cameraPos.y, cameraPos.z, false, false));
+			player.setHeading(noClipCamera.getRot(2).z);
+			noClipCamera.destroy(true);
+			noClipCamera = null;
+		}
 	}
-	mp.game.cam.renderScriptCams(false, false, 0, true, false);
-	localPlayer.freezePosition(false);
-	localPlayer.setInvincible(false);
-	localPlayer.setVisible(true, false);
-	localPlayer.setCollision(true, false);
-}
+
+	showToast({ type: "info", seconds: 1500, message: `Noclip ${isNoClip ? "activated" : "deactivated"}!` });
+	mp.game.cam.renderScriptCams(isNoClip, false, 0, true, false);
+	showPlayer(isNoClip);
+};
+
 mp.events.add("render", function () {
-	if (!noClipCamera || mp.gui.cursor.visible) {
-		return;
-	}
+	if (!noClipCamera || mp.gui.cursor.visible || sharedVariables.haveInterfaceOpen) return;
+	const rightAxisX = mp.game.controls.getDisabledControlNormal(0, 220);
+	const rightAxisY = mp.game.controls.getDisabledControlNormal(0, 221);
+	const leftAxisX = mp.game.controls.getDisabledControlNormal(0, 218);
+	const leftAxisY = mp.game.controls.getDisabledControlNormal(0, 219);
+	const rot = noClipCamera.getRot(2);
+	const pos = noClipCamera.getCoord();
+	const rr = noClipCamera.getDirection();
+	const vector = new mp.Vector3(0, 0, 0);
+	const upVector = new mp.Vector3(0, 0, 1);
+	const rightVector = getCrossProduct(getNormalizedVector(rr), getNormalizedVector(upVector));
+	let upMovement = 0.0;
+	let downMovement = 0.0;
+	let fastMult = 1;
+	let slowMult = 1;
+
 	controlModifier = mp.keys.isDown(bindASCIIKeys.LCtrl);
 	shiftModifier = mp.keys.isDown(bindASCIIKeys.Shift);
-	var rot = noClipCamera.getRot(2);
-	var fastMult = 1;
-	var slowMult = 1;
+
 	if (shiftModifier) {
 		fastMult = 3;
 	} else if (controlModifier) {
 		slowMult = 0.5;
 	}
-	var rightAxisX = mp.game.controls.getDisabledControlNormal(0, 220);
-	var rightAxisY = mp.game.controls.getDisabledControlNormal(0, 221);
-	var leftAxisX = mp.game.controls.getDisabledControlNormal(0, 218);
-	var leftAxisY = mp.game.controls.getDisabledControlNormal(0, 219);
-	var pos = noClipCamera.getCoord();
-	var rr = noClipCamera.getDirection();
-	var vector = new mp.Vector3(0, 0, 0);
+
 	vector.x = rr.x * leftAxisY * fastMult * slowMult;
 	vector.y = rr.y * leftAxisY * fastMult * slowMult;
 	vector.z = rr.z * leftAxisY * fastMult * slowMult;
-	var upVector = new mp.Vector3(0, 0, 1);
-	var rightVector = getCrossProduct(getNormalizedVector(rr), getNormalizedVector(upVector));
+
 	rightVector.x *= leftAxisX * 0.5;
 	rightVector.y *= leftAxisX * 0.5;
 	rightVector.z *= leftAxisX * 0.5;
-	var upMovement = 0.0;
+
 	if (mp.keys.isDown(bindASCIIKeys.Q)) {
 		upMovement = 0.5;
 	}
-	var downMovement = 0.0;
+
 	if (mp.keys.isDown(bindASCIIKeys.E)) {
 		downMovement = 0.5;
 	}
+
 	mp.players.local.position = new mp.Vector3(pos.x + vector.x + 1, pos.y + vector.y + 1, pos.z + vector.z + 1);
 	mp.players.local.heading = rr.z;
 	noClipCamera.setCoord(pos.x - vector.x + rightVector.x, pos.y - vector.y + rightVector.y, pos.z - vector.z + rightVector.z + upMovement - downMovement);

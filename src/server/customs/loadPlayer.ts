@@ -8,8 +8,15 @@ const accountsService = new AccountsService();
 mp.events.add("playerReady", async (player) => {
 	player.vars = {};
 	player.vars.loadPlayerInfo = true;
+	player.position = new mp.Vector3(413.0605, 121.1927, 108.1837);
+	player.alpha = 0;
 
 	RPC.callClient(player, "showAuthentication", true);
+	player.setVariable("updateSharedVariables", {
+		variables: {
+			haveInterfaceOpen: true
+		}
+	});
 });
 
 mp.events.add("playerQuit", (player) => {
@@ -90,8 +97,17 @@ mp.events.add("loadPlayerInfos", async (player: PlayerMp, user: IUser) => {
 		player.name = user.username;
 		player.metadata = user;
 		player.vars.loadPlayerInfo = false;
+		player.position = new mp.Vector3(-146.0594, -872.1219, 29.8046);
+		player.alpha = 255;
+		player.heading = 120;
 
 		RPC.callClient(player, "client:loadPlayerInfos");
+		player.setVariable("updateSharedVariables", {
+			variables: {
+				haveInterfaceOpen: false,
+				stats: user.stats
+			}
+		});
 	} catch (e) {
 		rageConsole.error(e);
 	}
