@@ -21,11 +21,13 @@ mp.events.add("playerReady", async (player) => {
 			}
 		});
 	}, 200);
-
-	setInterval(() => {
-		RPC.triggerBrowsers(player, "brw:updateOnlinePlayers", mp.players.length);
-	}, 15000);
 });
+
+setInterval(() => {
+	mp.players.forEach((player) => {
+		RPC.triggerBrowsers(player, "brw:updateOnlinePlayers", mp.players.length);
+	});
+}, 15000);
 
 mp.events.add("playerQuit", (player) => {
 	try {
