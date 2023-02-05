@@ -10,6 +10,14 @@ RPC.register("toggleSnow", () => {
 	return newBool;
 });
 
+RPC.register("getCamPos", () => {
+	const camera = mp.cameras.new("gameplay");
+	const position = camera.getCoord();
+	const direction = camera.getDirection();
+
+	return { position, direction };
+});
+
 RPC.register("client:loadPlayerInfos", () => {
 	["showTimestamp", "snow"].forEach((elem) => {
 		if (!mp.storage.data.hasOwnProperty(elem)) {

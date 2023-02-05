@@ -4,38 +4,36 @@ import { generateRandomRGBColorAsArray } from "@shared/utils";
 import { addNewCommand } from "@/customs/commandHandling";
 import * as rpc from "rage-rpc";
 import fs from "fs";
-const saveFile = "savedposcam.txt";
 
 addNewCommand({
-	commandName: "savecam",
-	adminLvl: 1,
-	callback: function (player, name = "No name") {
-		player.call("getCamCoords", [name]);
-	}
-});
+	commandName: "savepos",
+	adminLvl: 4,
+	callback: async (player, name) => {
+		const { position, direction } = await rpc.callClient(player, "getCamPos");
+		const playerPosition = player.position;
 
-mp.events.add("saveCamCoords", (player, position, pointAtCoord, name = "No name") => {
-	const pos = JSON.parse(position);
-	const point = JSON.parse(pointAtCoord);
-
-	fs.appendFile(
-		saveFile,
-		`Position: ${pos.x}, ${pos.y}, ${pos.z} | pointAtCoord: ${point.position.x}, ${point.position.y}, ${point.position.z} | entity: ${point.entity} - ${name}\r\n`,
-		(err) => {
-			if (err) {
-				player.notify(`~r~SaveCamPos Error: ~w~${err.message}`);
-			} else {
-				player.notify(`~g~PositionCam saved. ~w~(${name})`);
+		fs.appendFile(
+			"savedPositions.txt",
+			`Name: ${name ? name : "undefined"} 
+			Player position: ${JSON.stringify(playerPosition)} 
+			Camera details: { 
+				position: ${JSON.stringify(position)} 
+				direction: ${JSON.stringify(direction)} 
 			}
-		}
-	);
+			\r\n`,
+			(err) => {
+				if (err) return player.showToast({ type: "error", message: "Position could not be saved!", seconds: 1500 });
+				player.showToast({ type: "success", message: "Position saved!", seconds: 1500 });
+			}
+		);
+	}
 });
 
 addNewCommand({
 	commandName: "spawncar",
 	alias: ["veh", "spawnveh"],
 	adminLvl: 1,
-	callback: function (player, vehicle) {
+	callback: (player, vehicle) => {
 		if (!vehicle) return player.sendErrorMessage("You need to type some vehicle to spawn it!");
 		if (!VEHICLE_HASES[vehicle]) return player.sendErrorMessage("This vehicle doesn't exists!");
 

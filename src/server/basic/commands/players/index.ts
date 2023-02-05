@@ -5,7 +5,7 @@ addNewCommand({
 	commandName: "clearmychat",
 	alias: ["cmc"],
 	callback: async (player) => {
-		for (let i = 0; i < 30; i++) player.outputChatBox("");
+		for (let i = 0; i < 100; i++) player.outputChatBox(" ");
 		player.sendSuccessMessage("Your chat has been cleared successfully.");
 	}
 });
