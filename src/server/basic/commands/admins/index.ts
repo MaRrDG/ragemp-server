@@ -108,11 +108,9 @@ addNewCommand({
 
 		mp.world.weather = weather;
 
-		if (["SNOW", "BLIZZARD", "SNOWLIGHT", "XMAS"].includes(weather.toLocaleUpperCase())) {
-			mp.players.forEach((elem) => {
-				rpc.callClient(elem, "toggleSnow", elem.vars.snow);
-			});
-		}
+		mp.players.forEach((elem) => {
+			rpc.callClient(elem, "toggleSnow", elem.vars.snow);
+		});
 
 		player.sendSuccessMessage("Weather changed successfully");
 	}

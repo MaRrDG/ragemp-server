@@ -10,13 +10,21 @@ mp.events.add("playerReady", async (player) => {
 	player.vars.loadPlayerInfo = true;
 	player.position = new mp.Vector3(413.0605, 121.1927, 108.1837);
 	player.alpha = 0;
+	player.dimension = player.id;
+	RPC.triggerBrowsers(player, "brw:updateOnlinePlayers", mp.players.length);
 
-	RPC.callClient(player, "showAuthentication", true);
-	player.setVariable("updateSharedVariables", {
-		variables: {
-			haveInterfaceOpen: true
-		}
-	});
+	setTimeout(() => {
+		RPC.callClient(player, "showAuthentication", true);
+		player.setVariable("updateSharedVariables", {
+			variables: {
+				haveInterfaceOpen: true
+			}
+		});
+	}, 200);
+
+	setInterval(() => {
+		RPC.triggerBrowsers(player, "brw:updateOnlinePlayers", mp.players.length);
+	}, 15000);
 });
 
 mp.events.add("playerQuit", (player) => {
@@ -100,8 +108,13 @@ mp.events.add("loadPlayerInfos", async (player: PlayerMp, user: IUser) => {
 		player.position = new mp.Vector3(-146.0594, -872.1219, 29.8046);
 		player.alpha = 255;
 		player.heading = 120;
+		player.dimension = 0;
 
 		RPC.callClient(player, "client:loadPlayerInfos");
+		RPC.triggerBrowsers(player, "brw:updateHud", {
+			bankMoney: player.metadata.stats.bankMoney,
+			money: player.metadata.stats.money
+		});
 		player.setVariable("updateSharedVariables", {
 			variables: {
 				haveInterfaceOpen: false,
