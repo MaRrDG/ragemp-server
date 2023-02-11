@@ -6,22 +6,28 @@ import * as RPC from "rage-rpc";
 const accountsService = new AccountsService();
 
 mp.events.add("playerReady", async (player) => {
+	// @ts-ignore
 	player.vars = {};
 	player.vars.loadPlayerInfo = true;
 	player.position = new mp.Vector3(413.0605, 121.1927, 108.1837);
 	player.alpha = 0;
+	player.dimension = player.id;
+	RPC.triggerBrowsers(player, "brw:updateOnlinePlayers", mp.players.length);
 
-	RPC.callClient(player, "showAuthentication", true);
-	player.setVariable("updateSharedVariables", {
-		variables: {
-			haveInterfaceOpen: true
-		}
-	});
+	setTimeout(() => {
+		RPC.callClient(player, "showAuthentication", true);
+		player.setVariable("updateSharedVariables", {
+			variables: {
+				haveInterfaceOpen: true
+			}
+		});
+	}, 200);
 });
 
 mp.events.add("playerQuit", (player) => {
 	try {
 		if (player.vars.loadPlayerInfo) return;
+		player.metadata.stats.isLogged = false;
 		accountsService.patchEntity({ username: player.name, entity: player.metadata });
 	} catch (e) {
 		rageConsole.error(e);
@@ -100,12 +106,28 @@ mp.events.add("loadPlayerInfos", async (player: PlayerMp, user: IUser) => {
 		player.position = new mp.Vector3(-146.0594, -872.1219, 29.8046);
 		player.alpha = 255;
 		player.heading = 120;
+		player.dimension = 0;
+		player.metadata.stats.isLogged = true;
 
 		RPC.callClient(player, "client:loadPlayerInfos");
+		RPC.triggerBrowsers(player, "brw:updateHud", {
+			bankMoney: player.metadata.stats.bankMoney,
+			money: player.metadata.stats.money
+		});
 		player.setVariable("updateSharedVariables", {
 			variables: {
 				haveInterfaceOpen: false,
-				stats: user.stats
+				stats: player.metadata.stats
+			}
+		});
+
+		await accountsService.patchEntity({
+			username: user.username,
+			entity: {
+				stats: {
+					...player.metadata.stats,
+					isLogged: true
+				}
 			}
 		});
 	} catch (e) {

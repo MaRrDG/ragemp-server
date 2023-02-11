@@ -1,6 +1,7 @@
-import { GlobalService } from './globalService';
-import { rageConsole } from '@shared/utils';
-import { AccountsModel, IUser } from './../models/userModel';
+import { GlobalService } from "./globalService";
+import { rageConsole } from "@shared/utils";
+import { AccountsModel, IUser } from "./../models/userModel";
+import { DeepPartial } from "@/@types";
 
 // TODO: Error handling mai bun
 
@@ -25,7 +26,7 @@ export class AccountsService implements GlobalService {
 		}
 	}
 
-	public async postEntity({ entity }: { entity: Omit<IUser, 'stats'> }) {
+	public async postEntity({ entity }: { entity: Omit<IUser, "stats"> }) {
 		try {
 			await AccountsModel.create(entity);
 			rageConsole.query(`A new account has been added with username: ${entity.username}`);
@@ -38,7 +39,7 @@ export class AccountsService implements GlobalService {
 		const account = new AccountsModel(entity);
 		const validation = account.validateSync();
 
-		if (validation?.errors) return rageConsole.error('Missing required fields');
+		if (validation?.errors) return rageConsole.error("Missing required fields");
 
 		try {
 			AccountsModel.findOneAndUpdate({ username: username }, entity).exec();
@@ -47,9 +48,9 @@ export class AccountsService implements GlobalService {
 		}
 	}
 
-	public async patchEntity({ username, entity }: { username: string; entity: IUser }) {
+	public async patchEntity({ username, entity }: { username: string; entity: DeepPartial<IUser> }) {
 		try {
-			AccountsModel.findOneAndUpdate({ username: username }, entity).exec();
+			AccountsModel.findOneAndUpdate({ username: username }, { $set: entity }, { upsert: true, new: true }).exec();
 		} catch (e) {
 			rageConsole.error(e);
 		}

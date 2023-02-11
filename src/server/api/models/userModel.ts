@@ -13,9 +13,15 @@ export interface IUser {
 		money: number;
 		bankMoney: number;
 		level: number;
+		hoursPlayed: number;
 		points: {
-			experience?: number;
+			experience: number;
 		};
+		payCheck: {
+			minutes: number;
+			seconds: number;
+		};
+		isLogged: boolean;
 	};
 }
 
@@ -31,12 +37,16 @@ const AccountsSchema = new mongoose.Schema<IUser>({
 		helper: { type: Number, default: 0 },
 		money: { type: Number, default: 0 },
 		bankMoney: { type: Number, default: 0 },
-		level: { type: Number, default: 0 },
+		level: { type: Number, default: 1 },
+		hoursPlayed: { type: Number, default: 0 },
 		points: {
-			type: {
-				experience: { type: Number, default: 0 }
-			}
-		}
+			experience: { type: Number, default: 0 }
+		},
+		payCheck: {
+			minutes: { type: Number, default: 60 },
+			seconds: { type: Number, default: 60 }
+		},
+		isLogged: { type: Boolean, default: false }
 	}
 });
 

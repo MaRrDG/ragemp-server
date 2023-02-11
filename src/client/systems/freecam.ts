@@ -1,4 +1,4 @@
-import { sharedVariables } from "./../../events/index";
+import { sharedVariables } from "../events";
 import { getCrossProduct, getNormalizedVector, showPlayer, showToast } from "@/utils";
 
 const bindVirtualKeys = {

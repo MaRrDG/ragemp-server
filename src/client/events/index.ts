@@ -10,7 +10,8 @@ mp.events.add("loadPlayerInfos", () => {
 
 	RPC.triggerBrowsers("brw:loadPlayerInfos", {
 		player: {
-			showTimestamp: mp.storage.data.showTimestamp
+			showTimestamp: mp.storage.data.showTimestamp,
+			id: player.remoteId
 		}
 	});
 });
