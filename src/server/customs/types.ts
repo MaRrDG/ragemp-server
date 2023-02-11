@@ -11,11 +11,12 @@ declare global {
 
 	interface PlayerVars {
 		loadPlayerInfo: boolean;
+		currentHoursPlayed: number;
 	}
 
 	interface PlayerMp {
 		metadata: PlayerMetadata;
-		vars: DeepPartial<PlayerVars>;
+		vars: PlayerVars;
 		showToast: ({ type, message, seconds }: { type: "error" | "success" | "warning" | "info"; message: string; seconds: number }) => void;
 	}
 

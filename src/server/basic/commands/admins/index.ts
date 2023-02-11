@@ -105,13 +105,7 @@ addNewCommand({
 	alias: ["setw"],
 	callback: (player, weather) => {
 		if (!WEATHERS.includes(weather.toLocaleUpperCase()) || !weather) return player.sendErrorMessage(`Weather should be: ${WEATHERS.join(", ")}`);
-
 		mp.world.weather = weather;
-
-		mp.players.forEach((elem) => {
-			rpc.callClient(elem, "toggleSnow", elem.vars.snow);
-		});
-
 		player.sendSuccessMessage("Weather changed successfully");
 	}
 });
