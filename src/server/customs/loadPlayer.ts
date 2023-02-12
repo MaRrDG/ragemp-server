@@ -110,10 +110,10 @@ mp.events.add("loadPlayerInfos", async (player: PlayerMp, user: IUser) => {
 		player.metadata.stats.isLogged = true;
 
 		RPC.callClient(player, "client:loadPlayerInfos");
-		RPC.triggerBrowsers(player, "brw:updateHud", {
-			bankMoney: player.metadata.stats.bankMoney,
-			money: player.metadata.stats.money
+		RPC.triggerBrowsers(player, "brw:updateStats", {
+			...player.metadata.stats
 		});
+
 		player.setVariable("updateSharedVariables", {
 			variables: {
 				haveInterfaceOpen: false,
