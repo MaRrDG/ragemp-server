@@ -15,7 +15,7 @@ mp.events.add("playerReady", async (player) => {
 	RPC.triggerBrowsers(player, "brw:updateOnlinePlayers", mp.players.length);
 
 	setTimeout(() => {
-		RPC.callClient(player, "showAuthentication", true);
+		RPC.callClient(player, "client:showAuthentication", true);
 		player.setVariable("updateSharedVariables", {
 			variables: {
 				haveInterfaceOpen: true
@@ -50,7 +50,7 @@ RPC.register("brw:checkPlayerCredentials", async (credentials, info) => {
 			return player.showToast({ type: "error", message: "Login failed, your username or password is incorrect.", seconds: 5000 });
 
 		setTimeout(() => {
-			RPC.callClient(player, "showAuthentication", false);
+			RPC.callClient(player, "client:showAuthentication", false);
 
 			const { _id, __v, password, rgscId, socialClub, uuid, ...user } = resultData._doc;
 
@@ -84,7 +84,7 @@ RPC.register("brw:createPlayerCredentials", async (credentials, info) => {
 		player.name = username;
 
 		setTimeout(async () => {
-			RPC.callClient(player, "showAuthentication", false);
+			RPC.callClient(player, "client:showAuthentication", false);
 			const resultData: any = await accountsService.getEntityByUsername({ username: player.name });
 			if (!resultData) return;
 

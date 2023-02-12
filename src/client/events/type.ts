@@ -1,6 +1,14 @@
 import { IUser } from "./../../server/api/models/userModel";
 
-export type IShared = {
-	haveInterfaceOpen?: boolean;
-	stats?: IUser["stats"];
-};
+declare global {
+	type IShared = {
+		haveInterfaceOpen?: boolean;
+		stats?: IUser["stats"];
+	};
+
+	interface IClientEvents {
+		loadPlayerInfos: () => void;
+	}
+}
+
+export {};

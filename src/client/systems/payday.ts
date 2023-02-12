@@ -12,7 +12,7 @@ setInterval(() => {
 
 	if (sharedVariables.stats.payCheck.minutes < 0) {
 		RPC.callServer("server:payday");
-		sharedVariables.stats.payCheck.minutes = 60;
+		sharedVariables.stats.payCheck.minutes = 59;
 		sharedVariables.stats.payCheck.seconds = 60;
 	}
 
