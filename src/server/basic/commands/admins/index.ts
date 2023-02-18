@@ -9,7 +9,7 @@ addNewCommand({
 	commandName: "savepos",
 	adminLvl: 4,
 	callback: async (player, name) => {
-		const { position, direction } = await rpc.callClient(player, "getCamPos");
+		const { position, direction } = await rpc.callClient(player, "client:getCamPos");
 		const playerPosition = player.position;
 
 		fs.appendFile(

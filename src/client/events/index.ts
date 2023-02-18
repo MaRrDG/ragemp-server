@@ -1,4 +1,3 @@
-import { IShared } from "./type";
 import * as RPC from "rage-rpc";
 
 const player = mp.players.local;

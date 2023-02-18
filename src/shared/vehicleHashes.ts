@@ -2,6 +2,7 @@ export const VEHICLE_HASES: { [key: string]: string | number } = {
 	ursa: "ursa",
 	rs7: "rs7",
 	supra2: "supra2",
+	gtr: "gtr",
 	adder: 3078201489,
 	airbus: 1283517198,
 	airtug: 1560980623,

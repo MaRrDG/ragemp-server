@@ -1,5 +1,4 @@
-import "./randomStuff";
-import "./browsers";
+import "./rpcs";
 import "./events";
 import "./systems";
 import { CONFIG } from "./config";
